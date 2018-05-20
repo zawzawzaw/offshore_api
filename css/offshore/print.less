@@ -1,0 +1,56 @@
+@media only print
+{
+    body {
+		font-family: Georgia, serif;
+		background: none;
+		color: black;
+	}	
+
+	a[href]:after { content: none !important; }
+  	img[src]:after { content: none !important; }
+	
+	.heading {
+		display: none!important;
+	}
+
+	.space50 {
+		// display: none!important;
+	}
+
+	.labels {
+		.row {
+			.col-md-4 {
+				display: inline-block;
+			}
+			.col-md-8 {
+				display: inline-block;
+			}
+			.col-md-3, .col-md-7 {
+				display: inline-block;
+				vertical-align: top;
+				margin-bottom: 20px;
+				fieldset {
+					border: 0px;
+					legend {
+						display: none;
+					}
+				}
+			}
+		}
+	}
+	#footer {
+		display: none;
+	}
+
+	fieldset {
+		margin-top: 20px;
+	}
+
+	.sort-btns {
+		display: none;
+	}
+
+	.search-container {
+		display: none;
+	}
+}

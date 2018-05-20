@@ -1,0 +1,447 @@
+@extends("layouts.master")
+
+@section("content")
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="space50"></div>
+				<h1>View company record</h1>				
+				<a href="{{ route('admin.approvedcompany.index') }}"><button class="custom-submit-class">Return to company details</button></a>				
+				
+				<div class="space50"></div>
+				<div class="labels">
+					<div class="row">
+						<div class="col-md-3"><p>Company status</p></div>
+						<div class="col-md-7">
+							<?php 
+							if($company->wpusers[0]->pivot->status == 1)
+								$company_status = "Pending"; 
+							elseif($company->wpusers[0]->pivot->status == 2)
+								$company_status = "Approved"; 
+							else
+								$company_status = "Rejected"; 
+							?>
+							<p>{{ $company_status }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Company code</p></div>	
+						<div class="col-md-7"><p>{{ $company->code }}</p></div>	
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Company name</p></div>	
+						<div class="col-md-7"><p>{{ $company->name }}</p></div>	
+					</div>					
+					<div class="row">
+						<div class="col-md-3">User</div>
+						<div class="col-md-7">
+							<fieldset class="persons">
+								<legend>
+									<p>
+										<?php 
+										$field = App\WpBpXprofileFields::where('name', 'First name')->first();
+										$firstname = App\WpBpXprofileData::where('user_id', $company->wpusers[0]->ID)->where('field_id', $field->id)->first(); ?>
+										{{ (count($firstname) == 0) ? "" : " ".$firstname->value }}
+										<?php 
+										$field = App\WpBpXprofileFields::where('name', 'Surname')->first();
+										$lastname = App\WpBpXprofileData::where('user_id', $company->wpusers[0]->ID)->where('field_id', $field->id)->first(); ?>
+										{{ (count($lastname) == 0) ? "" : " ".$lastname->value }}
+									</p>
+								</legend>								
+								<div class="row">
+	        						<div class="col-md-6">Person code</div>
+	        						<div class="col-md-6">{{ $company->wpusers[0]->pivot->owner_person_code }}</div>
+		        				</div>								
+							</fieldset>						
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Jurisdiction</p></div>
+						<div class="col-md-7"><p>{{ $company->companytypes->jurisdiction }}</p></div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Company Type</p></div>
+						<div class="col-md-7"><p>{{ $company->companytypes->name }}</p></div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Company registration number</p></div>
+						<div class="col-md-7">
+							<p>{{ $companywpuser->reg_no }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Company tax number</p></div>
+						<div class="col-md-7">
+							<p>{{ $companywpuser->tax_no }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>VAT registration number</p></div>
+						<div class="col-md-7">
+							<p>{{ $companywpuser->vat_reg_no }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Incorporation Date</p></div>
+						<div class="col-md-7">
+							<p>{{ $company->incorporation_date }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Registered office</p></div>
+						<div class="col-md-7">
+							<p>{{ $companywpuser->reg_office }}</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Shareholders</p></div>
+						<div class="col-md-7">							
+        					@foreach($company->companywpuser_shareholders as $key => $shareholder)
+        						@if($company->wpusers[0]->pivot->nominee_shareholder==1)
+								<br>
+        						@endif
+								<fieldset class="persons">
+        							<legend>Shareholder {{ $key+1 }}</legend>
+									<div class="row">
+										<div class="col-md-6">Type</div>
+										<div class="col-md-6">
+											@if($shareholder->type==1)
+		                    					<p>{{ "Individual" }}</p>
+		                    				@else
+												<p>{{ "Company" }}</p>
+		                    				@endif
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Name/Beneficial</div>
+										<div class="col-md-6">{{ $shareholder->name }}</div>
+									</div>
+									<div class="row">
+        								<div class="col-md-6">Person code</div>
+        								<div class="col-md-6">
+        									{{ $shareholder->person_code }}
+        								</div>
+        							</div>
+        							<div class="row">
+			        					<div class="col-md-6"">Nominee shareholder selected</div>
+			        					@if($company->wpusers[0]->pivot->nominee_shareholder==1)
+											<div class="col-md-6">Yes</div>
+										@else
+											<div class="col-md-6">No</div>
+				        				@endif
+			        				</div>
+			        				<div class="row">
+										<div class="col-md-6">Shareholder</div>
+										<div class="col-md-6">{{ $shareholder->name }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Share amount</div>
+										<div class="col-md-6">{{ $shareholder->share_amount }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address</div>
+										<div class="col-md-6">{{ $shareholder->address }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address 2</div>
+										<div class="col-md-6">{{ $shareholder->address_2 }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address 3</div>
+										<div class="col-md-6">{{ $shareholder->address_3 }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address 4</div>
+										<div class="col-md-6">{{ $shareholder->address_4 }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Telephone</div>
+										<div class="col-md-6">{{ $shareholder->telephone }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">@if($shareholder->type==1){{ "Passport" }} @else {{ "Incorporation certificate" }} @endif</div>
+										<div class="col-md-6"><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$shareholder->passport) }}">{{ $shareholder->passport }}</a></div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">@if($shareholder->type==1){{ "Bill" }} @else {{ "Memo & articles" }} @endif</div>
+										<div class="col-md-6"><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$shareholder->bill) }}">{{ $shareholder->bill }}</a></div>
+									</div>									
+    							</fieldset>
+        					@endforeach	
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Directors</p></div>
+						<div class="col-md-7">							
+        					@foreach($company->companywpuser_directors as $key => $director)
+        						@if($company->wpusers[0]->pivot->nominee_director==1)
+								<br>
+        						@endif
+        						<fieldset class="persons">
+        							<legend>Director {{ $key+1 }}</legend>
+									<div class="row">
+										<div class="col-md-6">Type</div>
+										<div class="col-md-6">
+											@if($director->type==1)
+		                    					<p>{{ "Individual" }}</p>
+		                    				@else
+												<p>{{ "Company" }}</p>
+		                    				@endif
+										</div>
+									</div>									
+									<div class="row">
+										<div class="col-md-6">Name</div>
+										<div class="col-md-6">{{ $director->name }}</div>
+									</div>
+									<div class="row">
+	    								<div for="col-md-6">Person code</div>
+	    								<div for="col-md-6">{{ $director->person_code }}</div>	    								
+	    							</div>
+									<div class="row">
+										<div class="col-md-6">Address</div>
+										<div class="col-md-6">{{ $director->address }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address 2</div>
+										<div class="col-md-6">{{ $director->address_2 }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address 3</div>
+										<div class="col-md-6">{{ $director->address_3 }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address 4</div>
+										<div class="col-md-6">{{ $director->address_4 }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Telephone</div>
+										<div class="col-md-6">{{ $director->telephone }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">@if($director->type==1){{ "Passport" }} @else {{ "Incorporation certificate" }} @endif</div>
+										<div class="col-md-6"><a href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$director->passport) }}">{{ $director->passport }}</a></div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">@if($director->type==1){{ "Bill" }} @else {{ "Memo & articles" }} @endif</div>
+										<div class="col-md-6"><a href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$director->bill) }}">{{ $director->bill }}</a></div>
+									</div>
+								</fieldset>
+        					@endforeach
+							@if($company->wpusers[0]->pivot->nominee_director==1)
+        						<div class="row each-director">
+	        						<div class="col-md-12">
+		        						<fieldset>
+		        							<legend>Nominee director</legend>
+		        							<div class="row">
+												<div class="col-md-6">Person code</div>
+												<div class="col-md-6">{{ $companywpuser->nominee_director_person_code }}</div>
+											</div>
+			        					</fieldset>
+    								</div>
+	        					</div>
+        					@endif
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3"><p>Secretaries</p></div>
+						<div class="col-md-7">							
+        					@foreach($company->companywpuser_secretaries as $key => $secretary)
+        						@if($company->wpusers[0]->pivot->nominee_secretary==1)
+								<br>
+        						@endif
+								<fieldset class="persons">
+        							<legend>Secretary {{ $key+1 }}</legend>
+									<div class="row">
+										<div class="col-md-6">Type</div>
+										<div class="col-md-6">
+											@if($secretary->type==1)
+		                    					<p>{{ "Individual" }}</p>
+		                    				@else
+												<p>{{ "Company" }}</p>
+		                    				@endif
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Name</div>
+										<div class="col-md-6">{{ $secretary->name }}</div>
+									</div>
+									<div class="row">
+        								<div class="col-md-6">Person code</div>
+        								<div class="col-md-6">{{ $secretary->person_code }}</div>
+        							</div>
+									<div class="row">
+										<div class="col-md-6">Address</div>
+										<div class="col-md-6">{{ $secretary->address }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address 2</div>
+										<div class="col-md-6">{{ $secretary->address_2 }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address 3</div>
+										<div class="col-md-6">{{ $secretary->address_3 }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Address 4</div>
+										<div class="col-md-6">{{ $secretary->address_4 }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">Telephone</div>
+										<div class="col-md-6">{{ $secretary->telephone }}</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">@if($secretary->type==1){{ "Passport" }} @else {{ "Incorporation certificate" }} @endif</div>
+										<div class="col-md-6"><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$secretary->passport) }}">{{ $secretary->passport }}</a></div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">@if($secretary->type==1){{ "Bill" }} @else {{ "Memo & articles" }} @endif</div>
+										<div class="col-md-6"><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$secretary->bill) }}">{{ $secretary->bill }}</a></div>
+									</div>
+    							</fieldset>
+        					@endforeach	
+        					@if($company->wpusers[0]->pivot->nominee_secretary==1)
+        						<div class="row each-director">
+	        						<div class="col-md-12">
+		        						<fieldset>
+		        							<legend>Nominee secretary</legend>
+		        							<div class="row">
+												<div class="col-md-6">Person Code</div>
+												<div class="col-md-6">{{ $companywpuser->nominee_secretary_person_code }}</div>
+											</div>
+			        					</fieldset>
+    								</div>
+	        					</div>
+        					@endif						
+						</div>
+					</div>
+					@if(count($servicescountries) > 1)
+					<div class="row">
+						<div class="col-md-3"><p>Services</p></div>
+						<div class="col-md-7">							
+							<table class="table table-striped">
+	                    		@foreach($servicescountries as $servicecountry)
+                    				<tr>                    					
+                    					@if($servicecountry->service_name!=="Registered office annual fee (compulsory)")
+                    					<td>{{ $servicecountry->service_name }}</td>
+                    					<td>{{ $servicecountry->country_name }}</td>
+                    					<td>{{ ($servicecountry->pivot->credit_card_count==0) ? "" : $servicecountry->pivot->credit_card_count }}</td>
+                    					@endif                    					
+                    				</tr>
+	                    		@endforeach
+                    		</table>                    		
+						</div>
+					</div>
+            		@endif		
+            		@if(count($informationservices) > 0)
+					<div class="row">
+						<div class="col-md-3"><p>Infomation services</p></div>
+						<div class="col-md-7">
+							<table class="table table-striped">
+	                    		@foreach($informationservices as $informationservice)	
+	                    			<tr>
+	                    				<td>{{ $informationservice->name }}</td>
+	                    			</tr>
+	                    		@endforeach
+                    		</table>
+						</div>
+					</div>	
+					@endif
+					<div class="row">
+						<div class="col-md-3">Date of next accounts</div>
+						<div class="col-md-7"><p>{{ $companywpuser->date_of_next_accounts }}</p></div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">Date of last accounts</div>
+						<div class="col-md-7"><p>{{ $companywpuser->date_of_last_accounts }}</p></div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">Accounts completion deadline</div>
+						<div class="col-md-7"><p>{{ $companywpuser->accounts_completion_deadline }}</p></div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">Date of last VAT return</div>
+						<div class="col-md-7"><p>{{ $companywpuser->date_of_last_vat_return }}</p></div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">Date of next VAT return</div>
+						<div class="col-md-7"><p>{{ $companywpuser->date_of_next_vat_return }}</p></div>
+					</div>	
+					<div class="row">
+						<div class="col-md-3">VAT return deadline</div>
+						<div class="col-md-7"><p>{{ $companywpuser->vat_return_deadline }}</p></div>
+					</div>	
+					<div class="row">
+						<div class="col-md-3">Next AGM due by</div>
+						<div class="col-md-7"><p>{{ $companywpuser->next_agm_due_by }}</p></div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">Next domiciliation renewal</div>
+						<div class="col-md-7"><p>{{ $companywpuser->next_domiciliation_renewal }}</p></div>
+					</div>
+					@if(!empty($companywpuser->incumbency_certificate))
+					<div class="row">
+						<div class="col-md-3">Incorporation certificate</div>
+						<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->incorporation_certificate) }}">{{ $companywpuser->incorporation_certificate }}</a></p></div>
+					</div>
+					@endif
+					@if(!empty($companywpuser->incumbency_certificate))
+					<div class="row">
+						<div class="col-md-3">Incumbency certificate</div>
+						<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->incumbency_certificate) }}">{{ $companywpuser->incumbency_certificate }}</a></p></div>
+					</div>
+					@endif
+					@if(!empty($companywpuser->company_extract))
+					<div class="row">
+						<div class="col-md-3">Company extract</div>
+						<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->company_extract) }}">{{ $companywpuser->company_extract }}</a></p></div>
+					</div>	
+					@endif
+					@if(!empty($companywpuser->last_financial_statements))
+						<div class="row">
+							<div class="col-md-3">Last financial statements</div>
+							<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->last_financial_statements) }}">{{ $companywpuser->last_financial_statements }}</a></p></div>
+						</div>
+					@endif
+					@if(!empty($companywpuser->other_documents_1_title))
+					<div class="row">
+						<div class="col-md-3">{{ $companywpuser->other_documents_1_title }}</div>
+						<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->other_documents_1) }}">{{ $companywpuser->other_documents_1 }}</a></p></div>
+					</div>
+					@endif
+					@if(!empty($companywpuser->other_documents_2_title))
+					<div class="row">
+						<div class="col-md-3">{{ $companywpuser->other_documents_2_title }}</div>
+						<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->other_documents_2) }}">{{ $companywpuser->other_documents_2 }}</a></p></div>
+					</div>
+					@endif
+					@if(!empty($companywpuser->other_documents_3_title))
+					<div class="row">
+						<div class="col-md-3">{{ $companywpuser->other_documents_3_title }}</div>
+						<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->other_documents_3) }}">{{ $companywpuser->other_documents_3 }}</a></p></div>
+					</div>
+					@endif
+					@if(!empty($companywpuser->other_documents_4_title))
+					<div class="row">
+						<div class="col-md-3">{{ $companywpuser->other_documents_4_title }}</div>
+						<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->other_documents_4) }}">{{ $companywpuser->other_documents_4 }}</a></p></div>
+					</div>
+					@endif
+					@if(!empty($companywpuser->other_documents_5_title))
+					<div class="row">
+						<div class="col-md-3">{{ $companywpuser->other_documents_5_title }}</div>
+						<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->other_documents_5) }}">{{ $companywpuser->other_documents_5 }}</a></p></div>
+					</div>
+					@endif
+					@if(!empty($companywpuser->other_documents_6_title))
+					<div class="row">
+						<div class="col-md-3">{{ $companywpuser->other_documents_6_title }}</div>
+						<div class="col-md-7"><p><a target="_blank" href="{{ url('public/uploads/'.$company->wpusers[0]->user_login.'/'.$companywpuser->other_documents_6) }}">{{ $companywpuser->other_documents_6 }}</a></p></div>
+					</div>
+					@endif
+
+					<div class="space50"></div>										
+				</div>
+			</div>
+		</div>
+	</div>
+@endsection

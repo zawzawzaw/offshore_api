@@ -1,0 +1,178 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+use App\Company;
+use App\CompanyWpuser;
+use App\Service;
+use App\Country;
+use App\CompanyWpuserDirector;
+use App\CompanyWpuserShareholder;
+use App\CompanyWpuserSecretary;
+
+class RegisteredcompanyController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+    	$companies = Company::with(['wpusers' => function($query) {
+            $query->wherePivot('status', 1); }, 'companytypes'])->where('status', 1)->get();
+
+    	return view('registeredcompany.index', ['companies'=>$companies]);
+    }
+
+    public function show(Request $request, $id) {
+
+        $company = Company::with(['wpusers' => function($query) {
+            $query->wherePivot('status', 1); }])->where("id", $id)->where('status', 1)->first();
+
+        $companywpuser_id = $company->wpusers[0]->pivot->id;
+
+        $company = Company::with(['wpusers' => function($query) {
+            $query->wherePivot('status', 1); }, 'companytypes', 'companywpuser_shareholders' => function($query) use($companywpuser_id){
+                $query->where('companywpuser_id', $companywpuser_id);
+            }, 'companywpuser_directors' => function($query) use($companywpuser_id) {
+                $query->where('companywpuser_id', $companywpuser_id);
+            }, 'companywpuser_secretaries' => function($query) use($companywpuser_id) {
+                $query->where('companywpuser_id', $companywpuser_id);
+            }, 'companywpuser_servicecountries' => function($query) use($companywpuser_id) {
+                $query->where('companywpuser_id', $companywpuser_id);
+            }, 'companywpuser_informationservices' => function($query) use($companywpuser_id) {
+                $query->where('companywpuser_id', $companywpuser_id);
+            }])->where("id", $id)->where('status', 1)->first();
+
+        // return $company;
+
+        $companywpuser_informationservices = CompanyWpuser::with(['informationservices'])->where('company_id', $company->id)->where('id', $companywpuser_id)->first();
+
+        $informationservices = $companywpuser_informationservices->informationservices;
+
+        $companywpuser_servicescountries = CompanyWpuser::with(['servicescountries'])->where('company_id', $company->id)->where('id', $companywpuser_id)->first();
+
+        $servicescountries = $companywpuser_servicescountries->servicescountries;      
+        
+        foreach ($servicescountries as $key => $value) {
+            $service = Service::where('id',$value->service_id)->first();
+            $country = Country::where('id', $value->country_id)->first();
+
+            $value->service_name = $service->name;
+            $value->country_name = $country->name;            
+        }       
+
+        // return $servicescountries;
+
+        return view('registeredcompany.show', ['company'=>$company, 'informationservices'=>$informationservices, 'servicescountries'=>$servicescountries]);
+    }
+
+    public function edit(Request $request, $id) {
+
+        $company = Company::with(['wpusers' => function($query) {
+            $query->wherePivot('status', 1); }])->where("id", $id)->where('status', 1)->first();
+
+        $companywpuser_id = $company->wpusers[0]->pivot->id;
+
+        $company = Company::with(['wpusers' => function($query) {
+            $query->wherePivot('status', 1); }, 'companytypes', 
+            'companywpuser_shareholders' => function($query) use($companywpuser_id){
+                $query->where('companywpuser_id', $companywpuser_id);
+            }, 'companywpuser_directors' => function($query) use($companywpuser_id) {
+                $query->where('companywpuser_id', $companywpuser_id);
+            }, 'companywpuser_secretaries' => function($query) use($companywpuser_id) {
+                $query->where('companywpuser_id', $companywpuser_id);
+            }, 'companywpuser_servicecountries' => function($query) use($companywpuser_id) {
+                $query->where('companywpuser_id', $companywpuser_id);
+            }, 'companywpuser_informationservices' => function($query) use($companywpuser_id) {
+                $query->where('companywpuser_id', $companywpuser_id);
+            }])->where("id", $id)->where('status', 1)->first();
+
+        // return $company;
+
+        $companywpuser_informationservices = CompanyWpuser::with(['informationservices'])->where('company_id', $company->id)->where('id', $companywpuser_id)->first();
+
+        $informationservices = $companywpuser_informationservices->informationservices;
+
+        $companywpuser_servicescountries = CompanyWpuser::with(['servicescountries'])->where('company_id', $company->id)->where('id', $companywpuser_id)->first();
+
+        $servicescountries = $companywpuser_servicescountries->servicescountries;      
+        
+        foreach ($servicescountries as $key => $value) {
+            $service = Service::where('id',$value->service_id)->first();
+            $country = Country::where('id', $value->country_id)->first();
+
+            $value->service_name = $service->name;
+            $value->country_name = $country->name;            
+        }
+
+        return view('registeredcompany.edit', ['company'=>$company, 'informationservices'=>$informationservices, 'servicescountries'=>$servicescountries]);
+    }
+
+    public function update(Request $request, $id) {     
+
+        // return $request->all();
+        
+        $company = Company::with(['wpusers' => function($query) {
+            $query->wherePivot('status', 1); }])->where('id', $id)->where('status', 1)->first();
+        
+        
+        $companywpuser_id = $company->wpusers[0]->pivot->id;
+
+        $companywpuser_directors = CompanyWpuserDirector::where('companywpuser_id', $companywpuser_id)->get();
+        $companywpuser_shareholders = CompanyWpuserShareholder::where('companywpuser_id', $companywpuser_id)->get();
+        $companywpuser_secretaries = CompanyWpuserSecretary::where('companywpuser_id', $companywpuser_id)->get();
+
+        foreach ($companywpuser_directors as $key => $companywpuser_director) {
+            $no = $key + 1;
+            $companywpuser_director->type = $request->input('director_'.$no.'_type'); 
+            $companywpuser_director->name = $request->input('director_'.$no.'_name');
+            $companywpuser_director->address = $request->input('director_'.$no.'_address');
+            $companywpuser_director->address_2 = $request->input('director_'.$no.'_address_2');
+            $companywpuser_director->address_3 = $request->input('director_'.$no.'_address_3');
+            $companywpuser_director->address_4 = $request->input('director_'.$no.'_address_4');
+            $companywpuser_director->telephone = $request->input('director_'.$no.'_telephone');
+            $companywpuser_director->passport = $request->input('director_'.$no.'_passport');
+            $companywpuser_director->bill = $request->input('director_'.$no.'_bill');
+            $companywpuser_director->save();
+        }
+
+        foreach ($companywpuser_shareholders as $key => $companywpuser_shareholder) {
+            $no = $key + 1;
+            $companywpuser_shareholder->type = $request->input('shareholder_'.$no.'_type'); 
+            $companywpuser_shareholder->name = $request->input('shareholder_'.$no.'_name');
+            $companywpuser_shareholder->address = $request->input('shareholder_'.$no.'_address');
+            $companywpuser_shareholder->address_2 = $request->input('shareholder_'.$no.'_address_2');
+            $companywpuser_shareholder->address_3 = $request->input('shareholder_'.$no.'_address_3');
+            $companywpuser_shareholder->address_4 = $request->input('shareholder_'.$no.'_address_4');
+            $companywpuser_shareholder->telephone = $request->input('shareholder_'.$no.'_telephone');
+            $companywpuser_shareholder->passport = $request->input('shareholder_'.$no.'_passport');
+            $companywpuser_shareholder->bill = $request->input('shareholder_'.$no.'_bill');
+            $companywpuser_shareholder->share_amount = $request->input('shareholder_'.$no.'_share_amount');
+            $companywpuser_shareholder->save();
+        }
+
+        foreach ($companywpuser_secretaries as $key => $companywpuser_secretary) {
+            $no = $key + 1;
+            $companywpuser_secretary->type = $request->input('secretary_'.$no.'_type'); 
+            $companywpuser_secretary->name = $request->input('secretary_'.$no.'_name');
+            $companywpuser_secretary->address = $request->input('secretary_'.$no.'_address');
+            $companywpuser_secretary->address_2 = $request->input('secretary_'.$no.'_address_2');
+            $companywpuser_secretary->address_3 = $request->input('secretary_'.$no.'_address_3');
+            $companywpuser_secretary->address_4 = $request->input('secretary_'.$no.'_address_4');
+            $companywpuser_secretary->telephone = $request->input('secretary_'.$no.'_telephone');
+            $companywpuser_secretary->passport = $request->input('secretary_'.$no.'_passport');
+            $companywpuser_secretary->bill = $request->input('secretary_'.$no.'_bill');
+            $companywpuser_secretary->save();
+        }
+
+        return redirect('admin/registeredcompany');
+        
+
+    }
+
+}

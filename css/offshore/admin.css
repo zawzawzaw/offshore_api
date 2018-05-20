@@ -1,0 +1,6 @@
+#main-content .admin-ctas li a button {
+  width: 300px;
+}
+#main-content .custom-table tr th:nth-of-type(2) {
+  width: 7%;
+}

@@ -1,0 +1,336 @@
+@extends('layouts.master')
+
+@section('content')
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="space50"></div>
+			<h1>Add a new company type</h1>
+			<a href="{{ route('admin.jurisdiction.index') }}"><button class="custom-submit-class">Return to company types</button></a>
+				
+			<div class="space50"></div>
+			
+			<div class="form-container">
+				{!! Form::open(array('route' => 'admin.jurisdiction.store', 'id'=>'add_company_type')) !!}
+					<div class="field-container">
+						{{ Form::label('company_type_name', 'Company type')}}
+						{{ Form::text('company_type_name', null, ['class'=>'custom-input-class']) }}
+					</div>
+					<div class="field-container">
+						{{ Form::label('company_name_rules', 'Company name rules')}}
+						{{ Form::textarea('company_name_rules', null, ['class'=>'custom-input-class']) }}
+					</div>
+					<div class="field-container">
+						{{ Form::label('shareholder_name_rules', 'Shareholder rules')}}
+						{{ Form::textarea('shareholder_name_rules', null, ['class'=>'custom-input-class']) }}
+					</div>
+					<div class="field-container">
+						{{ Form::label('director_name_rules', 'Director rules')}}
+						{{ Form::textarea('director_name_rules', null, ['class'=>'custom-input-class']) }}
+					</div>
+					<div class="field-container">
+						{{ Form::label('secretary_name_rules', 'Secretary rules')}}
+						{{ Form::textarea('secretary_name_rules', null, ['class'=>'custom-input-class']) }}
+					</div>
+					<div class="field-container">
+						{{ Form::label('company_type_price_label', 'Incorporation charge label')}}
+						{{ Form::text('company_type_price_label', null, ['class'=>'custom-input-class']) }}
+					</div>
+					<div class="field-container">
+						{{ Form::label('company_type_price_eu', 'Incorporation charge €')}}
+						{{ Form::text('company_type_price_eu', null, ['class'=>'custom-input-class']) }}
+					</div>					
+					<div class="field-container">
+						{{ Form::label('company_type_price', 'Incorporation charge $')}}
+						{{ Form::text('company_type_price', null, ['class'=>'custom-input-class']) }}
+					</div>	
+
+					{{ Form::hidden('service_3_name', 'Registered office annual fee (compulsory)') }}
+					{{ Form::hidden('service_3_country_1', '2') }}
+					<div class="field-container">
+						{{ Form::label('service_3_price_eu_1', 'Registered office fee €')}}
+						{{ Form::text('service_3_price_eu_1', null, ['class'=>'custom-input-class service_prices_eu']) }}
+					</div>					
+					<div class="field-container">
+						{{ Form::label('service_3_price_1', 'Registered office fee $')}}
+						{{ Form::text('service_3_price_1', null, ['class'=>'custom-input-class service_prices']) }}
+					</div>	
+
+					<div class="field-container">
+						{{ Form::label('shareholder_price_eu', 'Shareholder fee €')}}
+						{{ Form::text('shareholder_price_eu', null, ['class'=>'custom-input-class']) }}
+					</div>
+					<div class="field-container">
+						{{ Form::label('shareholder_price', 'Shareholder fee $')}}
+						{{ Form::text('shareholder_price', null, ['class'=>'custom-input-class']) }}
+					</div>						
+					<div class="field-container">
+						{{ Form::label('director_price_eu', 'Director fee €')}}
+						{{ Form::text('director_price_eu', null, ['class'=>'custom-input-class']) }}
+					</div>		
+					<div class="field-container">
+						{{ Form::label('director_price', 'Director fee $')}}
+						{{ Form::text('director_price', null, ['class'=>'custom-input-class']) }}
+					</div>								
+					<div class="field-container">
+						{{ Form::label('secretary_price_eu', 'Secretary fee €')}}
+						{{ Form::text('secretary_price_eu', null, ['class'=>'custom-input-class']) }}
+					</div>
+					<div class="field-container">
+						{{ Form::label('secretary_price', 'Secretary fee $')}}
+						{{ Form::text('secretary_price', null, ['class'=>'custom-input-class']) }}
+					</div>
+
+					
+					<div class="each-service">
+						<h3 class="form-header">Bank accounts</h3>
+						{{ Form::hidden('service_1_name', 'Bank accounts', ['class'=>'custom-input-class']) }}
+
+						<div id="cloneable">
+							<div class="field-group">												
+								<div class="field-container">
+									{{ Form::label('service_1_country_1', 'Bank location')}}
+									<div class="custom-input-class-select-container">																				
+										{{ Form::select('service_1_country_1', $countries, null, ['class' => 'custom-input-class service_countries']) }}
+									</div>
+								</div>		
+								<div class="field-container">
+									{{ Form::label('service_1_price_eu_1', 'Account fee €')}}
+									{{ Form::text('service_1_price_eu_1', null, ['class'=>'custom-input-class service_prices_eu']) }}
+								</div>					
+								<div class="field-container">
+									{{ Form::label('service_1_price_1', 'Account fee $')}}
+									{{ Form::text('service_1_price_1', null, ['class'=>'custom-input-class service_prices']) }}
+								</div>								
+							</div>
+						</div>
+						<div class="pasteclone"></div>
+
+						{{ Form::hidden('service_1_count', '1', ['id'=>'service_1_count']) }}
+						<a href="#" class="add-more" data-service="service_1"><button class="custom-submit-class">Add another bank account</button></a>
+					</div>
+					
+					<div class="each-service">
+						<h3 class="form-header">Credit/debit cards</h3>
+						{{ Form::hidden('service_2_name', 'Credit/debit cards', ['class'=>'custom-input-class']) }}
+						
+						<div id="cloneable">
+							<div class="field-group">												
+								<div class="field-container">
+									{{ Form::label('service_2_country_1', 'Bank location')}}
+									<div class="custom-input-class-select-container">										
+										{{ Form::select('service_2_country_1', $countries, null, ['class' => 'custom-input-class service_countries']) }}
+									</div>
+								</div>							
+								<div class="field-container">
+									{{ Form::label('service_2_price_eu_1', 'Card fee €')}}
+									{{ Form::text('service_2_price_eu_1', null, ['class'=>'custom-input-class service_prices_eu']) }}
+								</div>
+								<div class="field-container">
+									{{ Form::label('service_2_price_1', 'Card fee $')}}
+									{{ Form::text('service_2_price_1', null, ['class'=>'custom-input-class service_prices']) }}
+								</div>								
+							</div>
+						</div>
+						<div class="pasteclone"></div>
+
+						{{ Form::hidden('service_2_count', '1', ['id'=>'service_2_count']) }}
+						<a href="#" class="add-more" data-service="service_2"><button class="custom-submit-class">Add another card</button></a>
+					</div>
+
+					<!-- <div class="each-service">
+						<h3 class="form-header">Mail forwarding</h3>
+						{{ Form::hidden('service_3_name', 'Mail forwarding', ['class'=>'custom-input-class']) }}
+
+						<div id="cloneable">
+							<div class="field-group">												
+								<div class="field-container">
+									{{ Form::label('service_3_country_1', 'Mail forwarding country')}}
+									<div class="custom-input-class-select-container">										
+										{{ Form::select('service_3_country_1', $countries, null, ['class' => 'custom-input-class service_countries']) }}
+									</div>
+								</div>							
+								<div class="field-container">
+									{{ Form::label('service_3_price_1', 'Mail forwarding price (USD)')}}
+									{{ Form::text('service_3_price_1', null, ['class'=>'custom-input-class service_prices']) }}
+								</div>
+								<div class="field-container">
+									{{ Form::label('service_3_price_eu_1', 'Mail forwarding price (EUR)')}}
+									{{ Form::text('service_3_price_eu_1', null, ['class'=>'custom-input-class service_prices_eu']) }}
+								</div>
+							</div>
+						</div>
+						<div class="pasteclone"></div>
+
+						{{ Form::hidden('service_3_count', '1', ['id'=>'service_3_count']) }}
+						<a href="#" class="add-more" data-service="service_3">Add country & price</a>
+					</div>
+
+					<div class="each-service">
+						<h3 class="form-header">Local telephone</h3>
+						{{ Form::hidden('service_4_name', 'Local Telephone', ['class'=>'custom-input-class']) }}
+
+						<div id="cloneable">
+							<div class="field-group">												
+								<div class="field-container">
+									{{ Form::label('service_4_country_1', 'Local telephone country')}}
+									<div class="custom-input-class-select-container">										
+										{{ Form::select('service_4_country_1', $countries, null, ['class' => 'custom-input-class service_countries']) }}
+									</div>
+								</div>							
+								<div class="field-container">
+									{{ Form::label('service_4_price_1', 'Local telephone price (USD)')}}
+									{{ Form::text('service_4_price_1', null, ['class'=>'custom-input-class service_prices']) }}
+								</div>
+								<div class="field-container">
+									{{ Form::label('service_4_price_eu_1', 'Local telephone price (EUR)')}}
+									{{ Form::text('service_4_price_eu_1', null, ['class'=>'custom-input-class service_prices_eu']) }}
+								</div>
+							</div>
+						</div>
+						<div class="pasteclone"></div>
+
+						{{ Form::hidden('service_4_count', '1', ['id'=>'service_4_count']) }}
+						<a href="#" class="add-more" data-service="service_4">Add country & price</a>
+					</div> -->
+
+					<div class="each-service">
+						<!-- <h3 class="form-header">Information services</h3>
+
+						<div id="cloneable">
+							<div class="field-group">
+								<div class="field-container">
+									
+								</div>
+							</div>
+						</div>
+						<div class="pasteclone"></div> -->
+
+						<!-- {{ Form::label('information_service_1', 'Information services name')}} -->
+						{{ Form::hidden('information_service_1', 'Local telephone number', ['class'=>'custom-input-class information_services']) }}
+
+						<!-- {{ Form::label('information_service_2', 'Information services name')}} -->
+						{{ Form::hidden('information_service_2', 'Mailing address and forwarding', ['class'=>'custom-input-class information_services']) }}
+
+						<!-- {{ Form::label('information_service_3', 'Information services name')}} -->
+						{{ Form::hidden('information_service_3', 'Setting up a physical office presence', ['class'=>'custom-input-class information_services']) }}
+
+						<!-- {{ Form::label('information_service_4', 'Information services name')}} -->
+						{{ Form::hidden('information_service_4', 'Establishing a merchant account', ['class'=>'custom-input-class information_services']) }}
+
+						<!-- {{ Form::label('information_service_5', 'Information services name')}} -->
+						{{ Form::hidden('information_service_5', 'Purchasing real estate', ['class'=>'custom-input-class information_services']) }}
+
+						<!-- {{ Form::label('information_service_6', 'Information services name')}} -->
+						{{ Form::hidden('information_service_6', 'Economic citizenship possibilities', ['class'=>'custom-input-class information_services']) }}
+
+						{{ Form::hidden('information_service_count', '6', ['id'=>'information_service_count']) }}
+						<!-- <a href="#" class="add-more" data-service="information_service"><button class="custom-submit-class">Add information service</button></a> -->
+					</div>
+					
+					{{ Form::submit('Save', ['class'=>'custom-submit-class']) }}
+			{!! Form::close() !!}
+			</div>
+
+		</div>
+	</div>
+</div>
+<script>
+	function cloneForm($el) {
+		var clonedHtml = $el.clone();
+
+		$el.parent().parent().find('.pasteclone').append(clonedHtml);
+	}
+	function updateHiddenField(serviceName, $this) {	
+		if(serviceName=="information_service") {
+
+			console.log($this.parent().find('.information_services').length);
+			console.log('#'+serviceName+'_count')
+
+			$('#'+serviceName+'_count').val($this.parent().find('.information_services').length);	
+		}else {
+
+			// console.log($this.parent().find('.service_countries').length);
+			// console.log('#'+serviceName+'_count')
+
+			$('#'+serviceName+'_count').val($this.parent().find('.service_countries').length);	
+		}		
+	}
+	function updateClonedFields(serviceName, $this) {
+		var id = parseInt($this.parent().find('.field-group').length);
+
+		// console.log(id);
+
+		var $lastElAdded = $this.parent().find('.field-group').last();
+
+		if(serviceName=="information_service") {
+			$lastElAdded.find('input').attr('name', serviceName+'_'+id).val('');			
+		}else {
+			$lastElAdded.find('select').attr('name', serviceName+'_country_'+id).val('');
+			$lastElAdded.find('input.service_prices').attr('name', serviceName+'_price_'+id).val('');			
+			$lastElAdded.find('input.service_prices_eu').attr('name', serviceName+'_price_eu_'+id).val('');			
+		}		
+	}
+
+	$('.add-more').on('click', function(e){
+		e.preventDefault();
+
+
+		var serviceName = $(this).data('service');
+
+		cloneForm($(this).parent('.each-service').children('#cloneable').find('.field-group'));
+		updateClonedFields(serviceName, $(this));
+		updateHiddenField(serviceName, $(this));
+
+	});
+
+	$('#add_company_type').validate({
+		rules : {
+			'company_type_name': 'required',
+			'company_name_rules': 'required',
+			'shareholder_name_rules': 'required',
+			'director_name_rules': 'required',
+			'secretary_name_rules': 'required',
+			'company_type_price_eu': 'required',
+			'company_type_price': 'required',
+			'service_3_price_eu_1': 'required',
+			'service_3_price_1': 'required',
+			'shareholder_price_eu': 'required',
+			'shareholder_price': 'required',
+			'director_price_eu': 'required',
+			'director_price': 'required',
+			'secretary_price_eu': 'required',
+			'secretary_price': 'required',
+			'service_1_country_1': 'required',
+			'service_1_price_eu_1': 'required',
+			'service_1_price_1': 'required',
+			'service_2_country_1': 'required',
+			'service_2_price_eu_1': 'required',
+			'service_2_price_1': 'required'
+		},
+		messages: {
+			'company_type_name': 'Please provide company type',
+			'company_name_rules': 'Please provide company name rules',
+			'shareholder_name_rules': 'Please provide shareholder rules',
+			'director_name_rules': 'Please provide director rules',
+			'secretary_name_rules': 'Please provide secretary rules',
+			'company_type_price_eu': 'Please provide incorporation charge in €',
+			'company_type_price': 'Please provide incorporation charge in US$',
+			'service_3_price_eu_1': 'Please provide registered office fee in €',
+			'service_3_price_1': 'Please provide registered office fee in US$',
+			'shareholder_price_eu': 'Please provide shareholder fee in €',
+			'shareholder_price': 'Please provide shareholder fee in US$',
+			'director_price_eu': 'Please provide director fee in €',
+			'director_price': 'Please provide director fee in US$',
+			'secretary_price_eu': 'Please provide secretary fee in €',
+			'secretary_price': 'Please provide secretary fee in US$',
+			'service_1_country_1': 'Please provide bank location',
+			'service_1_price_eu_1': 'Please provide bank account fee in €',
+			'service_1_price_1': 'Please provide bank account fee in US$',
+			'service_2_country_1': 'Please provide bank location for credit card',
+			'service_2_price_eu_1': 'Please provide credit card fee in €',
+			'service_2_price_1': 'Please provide credit card fee in US$'
+		}
+	});
+</script>
+@endsection

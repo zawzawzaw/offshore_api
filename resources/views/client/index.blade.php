@@ -1,0 +1,138 @@
+@extends('layouts.master')
+
+@section('content')	
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				
+				<div class="space50"></div>
+				<h1>Person database</h1>			
+				<a href="{{ route('officiumtutus.client.create') }}"><button class="custom-submit-class">Add a person</button></a>					
+				<a href="{{ url('/officiumtutus') }}"><button class="custom-submit-class">Return to dashboard</button></a>				
+				<div class="space10"></div>									
+
+				<div id="demo" class="box jplist">
+					
+					<div class="jplist-panel box panel-top">
+						<div class="search-container">							
+						   	<input 
+							  data-path="*" 
+							  type="text" 
+							  value="" 
+							  placeholder="Search..." 
+							  data-control-type="textbox" 
+							  data-control-name="title-filter" 
+							  data-control-action="filter"
+						   	/>							
+						</div>
+						<table class="table table-striped"> 							
+							<!-- panel -->
+							<thead>						
+								<!-- search any text in the element -->
+
+								<tr data-control-type="sort-buttons-group"
+	                                data-control-name="header-sort-buttons"
+	                                data-control-action="sort"
+	                                data-mode="single"
+	                                data-datetime-format="{month}/{day}/{year}">
+									<th>
+										<span class="header sortable-header">Code</span>
+										<span class="sort-btns">
+	                                        <i class="fa fa-caret-up" data-path=".code" data-type="text" data-order="asc" title="Sort by Code Asc"></i>
+	                                        <i class="fa fa-caret-down" data-path=".code" data-type="text" data-order="desc" title="Sort by Code Desc"></i>
+	                                    </span>
+									</th>
+									<th>
+										<span class="header sortable-header">Name</span>
+										<span class="sort-btns">
+	                                        <i class="fa fa-caret-up" data-path=".name" data-type="text" data-order="asc" title="Sort by Name Asc"></i>
+	                                        <i class="fa fa-caret-down" data-path=".name" data-type="text" data-order="desc" title="Sort by Name Desc"></i>
+	                                    </span>
+									</th>									
+									<th>
+										<span class="header sortable-header">Email</span>
+										<span class="sort-btns">
+	                                        <i class="fa fa-caret-up" data-path=".email" data-type="text" data-order="asc" title="Sort by Email Asc"></i>
+	                                        <i class="fa fa-caret-down" data-path=".email" data-type="text" data-order="desc" title="Sort by Email Desc"></i>
+	                                    </span>
+									</th>															
+									<th>
+										<span class="header sortable-header">Nationality</span>
+										<span class="sort-btns">
+	                                        <i class="fa fa-caret-up" data-path=".country" data-type="text" data-order="asc" title="Sort by Country Asc"></i>
+	                                        <i class="fa fa-caret-down" data-path=".country" data-type="text" data-order="desc" title="Sort by Country Desc"></i>
+	                                    </span>
+									</th>
+									<th>
+										<span class="header sortable-header">Registered on</span>
+										<span class="sort-btns">
+	                                        <i class="fa fa-caret-up" data-path=".date" data-type="date" data-order="asc" title="Sort by Name Asc"></i>
+	                                        <i class="fa fa-caret-down" data-path=".date" data-type="date" data-order="desc" title="Sort by Date Desc"></i>
+	                                    </span>
+									</th>								
+									<th><span class="header">Action</span></th>							
+								</tr>													
+							</thead>				 
+							
+							<!-- data -->  
+							<tbody id="table-content" class="list box text-shadow"> 								
+					            @if($persons->count() > 0)							
+					              	@foreach($persons as $k => $person)
+					                    <tr id="id-{{$person->id}}" class="person-id list-item box">
+					                    	<td class="code">
+					                    		@if($person->person_code)
+					                    			{{ $person->person_code }}
+					                    		@endif
+				                    		</td>
+					                    	<td class="name">
+												{{ $person->first_name . " " . $person->surname }}
+					                    	</td>
+					                    	<td class="email">{{ $person->email }}</td>
+					                    	<td class="country">
+					                    		{{ $person->nationality }}
+					                    	</td>
+					                    	<td>
+					                    		<span class="date">
+						                    		@if(!empty($person->account_registered))
+						                    			{{ date('d M Y', strtotime($person->account_registered)) }}
+						                    		@else 
+						                    			{{ "" }}
+						                    		@endif
+						                    	</span>
+						                    </td>
+				                    	 	<td><a href="{{ route('officiumtutus.client.show', $person->id) }}"><button class="custom-submit-class">View</button></a><a href="{{ route('officiumtutus.client.edit', $person->id) }}"><button class="custom-submit-class">Edit</button></a></td>		                    						
+					                    </tr> 
+					              	@endforeach			              						
+					            @endif
+							</tbody>
+							
+							<div class="box jplist-no-results text-shadow align-center">
+								<p>No results found</p>
+							</div>
+
+						</table>
+					</div>
+								
+				</div>				
+				
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function(){
+			// jplist plugin call
+		    $('#demo').jplist({
+		        itemsBox: '.list',
+				itemPath: '.list-item',
+				panelPath: '.jplist-panel',
+				// storage: 'localstorage',
+				// storageName: 'jplist-table-sortable-cols'
+		    });
+
+	        //alternate up / down buttons on header click
+		    $('.header').on('click', function () {
+		        $(this).next('.sort-btns').find('[data-path]:not(.jplist-selected):first').trigger('click');
+		    });
+		});
+	</script>
+@endsection

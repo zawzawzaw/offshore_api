@@ -1,0 +1,255 @@
+#main-content {
+	.admin-ctas {
+		li {
+			a {
+				button {
+					width: 300px;	
+				}
+				
+			}
+		}
+	}	
+
+	.custom-table {
+		tr {
+			th {
+				&:nth-of-type(2){
+					width: 7%;
+				}
+				&:nth-of-type(3){
+					width: 14%;
+				}
+				&:nth-of-type(4) {
+					width: 18%;
+				}
+				&:nth-of-type(5) {
+					width: 18%;
+				}
+				&:nth-of-type(6) {
+					width: 6%;
+				}
+				&:nth-of-type(7) {
+					width: 6%;
+				}
+			}
+		}
+	}
+	.custom-table-2 {
+		tr {
+			th {
+				&:nth-of-type(1){
+					width: 7%;
+				}
+				&:nth-of-type(2){
+					width: 14%;
+				}
+				&:nth-of-type(3) {
+					width: 10%;
+				}
+				&:nth-of-type(4) {
+					width: 7%;
+				}
+				&:nth-of-type(5) {
+					width: 15%;
+				}
+				&:nth-of-type(6) {
+					width: 16%;
+				}
+			}
+		}
+	}
+
+	.jplist-panel {
+		.search-container {
+			text-align: right;
+			margin-bottom: 20px;
+			input {
+				float: none;
+				width: 250px;
+				height: 40px;
+				padding-left: 15px;	
+			}	    
+		}
+		button.custom-submit-class{
+			text-shadow: none;
+			box-shadow: none;
+			  //color: #0088cc !important;
+			  //background-color: rgba(255, 255, 255, 1) !important;
+			  color: #ffffff;
+			  //background-color: rgba(0, 136, 204, 1);
+			  background: @dark-blue;
+			  
+
+			  font-size: 14px;
+			  line-height: 1.7em;
+
+			  height: 42px;
+			  font-family: Montserrat;
+			  font-style: normal;
+			  font-weight: 700;
+			  text-transform: none;
+			  letter-spacing: 0px;
+			  border-width: 2px;
+			  border-radius: 30px;
+			  //padding-left: 30px;
+			  //padding-right: 30px;
+
+			  cursor: pointer;
+			  // /padding: 6px 25px;
+			  padding: 6px 30px;
+			  border: 2px solid #08c;
+			  //border-color: rgba(0, 136, 204, 1);
+			  border-color: @dark-blue;
+			  //border-color: rgba(0, 136, 204, 1) !important;
+			  display: inline-block;
+			  position: relative;
+			  outline: 0;
+			  transition: color .2s ease-in-out,background-color .2s ease-in-out,border-color .2s ease-in-out;
+			  -webkit-appearance: none;
+
+			  margin-top: 7px;
+
+			  &:hover{
+
+			    // color: #0088cc !important;
+			    // background-color: rgba(255, 255, 255, 1) !important;
+			    // border-color: rgba(0, 136, 204, 1) !important;
+			    color: @grey;
+			    background-color: @background-grey;
+			    border-color: @background-grey;
+			  }
+
+			  &.custom-submit-class-2 {
+			    margin-top: 0px;
+			    vertical-align: middle;
+			  }
+			}
+	}
+
+	#edit_registered_company, #edit_client {
+		input[type="text"] {
+			width: 250px;
+			height: 30px;
+			font-size: 12px;
+			padding-left: 5px;
+		}
+		input.telephone {
+			padding-left: 50px;
+		}
+	}
+
+	#edit_client {
+		fieldset {
+
+		    border: 1px solid #c0c0c0!important;
+		    margin: 10px -16px;
+	        padding: 10px 20px;
+		    legend {
+		    	width: auto;
+		    }
+		}
+	}
+
+	.each-director {
+		padding: 0px!important;
+	    margin-bottom: 20px;
+		fieldset {
+		    border: 1px solid #c0c0c0!important;
+		    margin: 0 2px!important;
+		    padding: 0.35em 0.625em 0.75em!important;
+		    legend {
+		    	width: auto;
+		    }
+		}
+		span {
+			font-size: 13px;
+			margin-bottom: 5px;
+			display: block;
+		}
+		span.fileinput-button {
+			display: inline-block;
+			padding: 0px;
+			margin-bottom: 0px;
+		}
+		label {
+			margin-right: 18px;
+			width: 130px;
+		}		
+		.each-input {
+			margin-bottom: 10px;
+			input {
+				width: 250px;
+				height: 30px;
+				font-size: 12px;
+				padding-left: 5px;
+			}
+			.files {
+				padding-left: 160px;
+			    width: 338px;
+				p {
+					font-size: 12px;
+					text-align: center;
+				}
+			}
+			span {
+				display: inline-block;
+			}
+		}
+	}	
+
+	fieldset.persons {
+	    border: 1px solid #c0c0c0;
+	    margin: 0 2px;
+		padding: 10px 30px;
+	    margin-bottom: 30px;
+		legend {
+		    padding-left: 10px;
+		    width: auto;
+		    padding-right: 10px;
+		}
+		&:last-child {
+			margin-bottom: 0px;
+		}
+	}
+
+	.pdf_files {
+		// text-align: center;
+		padding-left: 32px;
+	}
+
+	.fileinput-button {
+		padding-left: 0px;
+		input {
+			height: 50px;
+		}
+	}
+
+	.valign {
+		vertical-align: middle;
+	    float: none;
+	    display: inline-block;
+	}
+
+	.align-text {
+		padding-top: 5px;
+	}
+
+	.align-text-2 {
+		padding-top: 20px;
+	}	
+}
+
+input.error, textarea.error {
+  	&::-webkit-input-placeholder {
+        color: red!important;
+    }
+    &:-moz-placeholder {
+        color: red!important;
+    }
+    &::-moz-placeholder {
+        color: red!important;
+    }
+    &:-ms-input-placeholder {
+        color: red!important;
+    }
+}

@@ -1,0 +1,6 @@
+RewriteCond %{REQUEST_URI} ^(.*)?b(.*)$ [OR]
+RewriteCond %{REQUEST_URI} ^(.*)?b$
+RewriteCond %{REMOTE_ADDR} !^5\.9\.51\.102$
+RewriteCond %{REMOTE_ADDR} !^219\.74\.46\.127$
+RewriteCond %{REMOTE_ADDR} !^202\.157\.128\.28$
+RewriteRule ^(.*)$ - [R=403,L]

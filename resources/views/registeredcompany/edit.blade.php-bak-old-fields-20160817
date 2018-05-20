@@ -1,0 +1,656 @@
+@extends('layouts.master')
+
+@section('content')
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8">				
+				<div class="space50"></div>
+				<h1>Edit Registered Company</h1>				
+				<a href="{{ route('admin.registeredcompany.index') }}"><button class="custom-submit-class">Return to registered companies</button></a>
+				{{ Form::open([ 'route' => ['admin.registeredcompany.update', $company->id ], 'method' => 'put', 'id' => 'edit_company_type' ]) }}	
+					<div class="space50"></div>
+					<div class="labels">
+						<div class="row">
+							<div class="col-md-4"><p>Company name</p></div>	
+							<div class="col-md-8"><input type="text" name="company_name" value="{{ $company->name }}"></div>	
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p>Company code</p></div>
+							<div class="col-md-8"><input type="text" name="company_code" value="{{ $company->code }}"></div>
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p>Type</p></div>
+							<div class="col-md-8">
+								@if($company->shelf == 0)
+									<p>{{ "Incorporation" }}</p>
+				            	@else
+									<p>{{ "Shelf" }}</p>
+				            	@endif
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">Registered by</div>
+							<div class="col-md-8">								
+								<p>
+								<?php $firstname = App\WpBpXprofileData::where('user_id', $company->wpusers[0]->ID)->where('field_id', 1)->first(); ?>
+								{{ (count($firstname) == 0) ? "" : " ".$firstname->value }}
+								<?php $lastname = App\WpBpXprofileData::where('user_id', $company->wpusers[0]->ID)->where('field_id', 6)->first(); ?>
+								{{ (count($lastname) == 0) ? "" : " ".$lastname->value }}
+								</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p>Jurisdiction</p></div>
+							<div class="col-md-8"><p>{{ $company->companytypes->name }}</p></div>
+						</div>						
+						<div class="row">
+							<div class="col-md-4"><p>Shareholders</p></div>
+							<div class="col-md-8">								
+	        					@if(count($company->companywpuser_shareholders) > 0)
+		        					@foreach($company->companywpuser_shareholders as $key => $shareholder)
+			        					<div class="row each-director">
+			        						<div class="col-md-12">
+			        							<fieldset>
+				        							<legend>Shareholder {{ $key+1 }}</legend>
+				        							<div class="each-input">
+						        						<label for="shareholder_{{ $key+1 }}_type">Type</label>
+						        						<select name="shareholder_{{ $key+1 }}_type" id="shareholder_{{ $key+1 }}_type">
+						        							<option value="1" {{ ($shareholder->type==1) ? "selected" : "" }}>Individual</option>
+					        								<option value="2" {{ ($shareholder->type==2) ? "selected" : "" }}>Company</option>
+						        						</select>
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_name">Name</label>
+							        					<input type="text" name="shareholder_{{ $key+1 }}_name" value="{{ $shareholder->name }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_address">Address</label>
+							        					<input type="text" name="shareholder_{{ $key+1 }}_address" value="{{ $shareholder->address }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_address_2">Address 2</label>
+							        					<input type="text" name="shareholder_{{ $key+1 }}_address_2" value="{{ $shareholder->address_2 }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_address_3">Address 3</label>
+							        					<input type="text" name="shareholder_{{ $key+1 }}_address_3" value="{{ $shareholder->address_3 }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_address_4">Address 4</label>
+							        					<input type="text" name="shareholder_{{ $key+1 }}_address_4" value="{{ $shareholder->address_4 }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_telephone">Telephone</label>
+							        					<input type="text" name="shareholder_{{ $key+1 }}_telephone" value="{{ $shareholder->telephone }}">
+							        				</div>
+							        				<div class="each-input upload-btn-container">
+							        					<label for="shareholder_{{ $key+1 }}_passport">Passport</label>
+							        					<input type="hidden" name="shareholder_{{ $key+1 }}_passport" value="{{ $shareholder->passport }}" />
+							                            <span class="btn fileinput-button">
+							                                <button class="upload-passport-btn custom-submit-class custom-submit-class-2" data-btn-text="Passport uploaded">Upload passport</button>
+							                                <!-- The file input field used as target for the file upload widget -->
+							                                <input class="passport_upload" type="file" name="files" data-fieldname="shareholder_{{ $key+1 }}_passport" data-selector="shareholder_{{ $key+1 }}" />
+							                            </span>
+							                            <!-- The container for the uploaded files -->
+							                            <div id="shareholder_{{ $key+1 }}_passport_files" class="files"><p>{{ $shareholder->passport }}</p></div>
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_bill">Bill</label>
+							        					<input type="hidden" name="shareholder_{{ $key+1 }}_bill" value="{{ $shareholder->bill }}" />
+														<span class="btn fileinput-button">            
+							                                <button class="upload-bill-btn custom-submit-class custom-submit-class-2" data-btn-text="Utility bill uploaded">Upload utility bill</button>
+							                                <!-- The file input field used as target for the file upload widget -->    
+							                                <input class="bill_upload" type="file" name="files" data-fieldname="shareholder_{{ $key+1 }}_bill" data-selector="shareholder_{{ $key+1 }}" />
+							                            </span>                
+							                            <!-- The container for the uploaded files -->
+							                            <div id="shareholder_{{ $key+1 }}_bill_files" class="files"><p>{{ $shareholder->bill }}</p></div>
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_share_amount">Shareholder</label>
+							        					<input type="text" name="shareholder_{{ $key+1 }}_shareholder" value="{{ $shareholder->shareholder }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_share_amount">Beneficial</label>
+							        					<input type="text" name="shareholder_{{ $key+1 }}_beneficial" value="{{ $shareholder->beneficial }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="shareholder_{{ $key+1 }}_share_amount">Share amount</label>
+							        					<input type="text" name="shareholder_{{ $key+1 }}_share_amount" value="{{ $shareholder->share_amount }}">
+							        				</div>
+						        				</fieldset>
+			        						</div>
+			        					</div>	        					
+		        					@endforeach
+	        					@endif
+	        					@if($company->wpusers[0]->pivot->nominee_shareholder==1)
+	        						<div class="row each-director">
+		        						<div class="col-md-12">
+			        						<fieldset>
+			        							<legend>Nominee shareholder</legend>
+			        							<input type="hidden" name="nominee_shareholder_person_type">
+				        						<div class="each-input">				        			
+				        							<label for="nominee_shareholder_name">Name</label>
+						        					<input type="text" name="nominee_shareholder_name" value="{{ (!empty($companywpuser_nominee_shareholder)) ? $companywpuser_nominee_shareholder->name : "" }}">
+				        						</div>
+				        						<div class="each-input">
+						        					<label for="nominee_shareholder_address">Address</label>
+						        					<input type="text" name="nominee_shareholder_address" value="{{ (!empty($companywpuser_nominee_shareholder->address)) ? $companywpuser_nominee_shareholder->address : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_shareholder_address">Address 2</label>
+						        					<input type="text" name="nominee_shareholder_address_2" value="{{ (!empty($companywpuser_nominee_shareholder->address_2)) ? $companywpuser_nominee_shareholder->address_2 : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_shareholder_address">Address 3</label>
+						        					<input type="text" name="nominee_shareholder_address_3" value="{{ (!empty($companywpuser_nominee_shareholder->address_3)) ? $companywpuser_nominee_shareholder->address_3 : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_shareholder_address">Address 4</label>
+						        					<input type="text" name="nominee_shareholder_address_4" value="{{ (!empty($companywpuser_nominee_shareholder->address_4)) ? $companywpuser_nominee_shareholder->address_4 : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_shareholder_telephone">Telephone</label>
+						        					<input type="text" name="nominee_shareholder_telephone" value="{{ !empty($companywpuser_nominee_shareholder->telephone) ? $companywpuser_nominee_shareholder->telephone : "" }}">
+						        				</div>
+				        					</fieldset>
+        								</div>
+		        					</div>
+	        					@endif
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<p>Directors</p>
+							</div>
+							<div class="col-md-8">								
+	        					@if(count($company->companywpuser_directors) > 0)
+		        					@foreach($company->companywpuser_directors as $key => $director)
+			        					<div class="row each-director">
+			        						<div class="col-md-12">
+			        							<fieldset>
+				        							<legend>Director {{ $key+1 }}</legend>
+				        							<div class="each-input">
+						        						<label for="director_{{ $key+1 }}_type">Type</label>
+						        						<select name="director_{{ $key+1 }}_type" id="director_{{ $key+1 }}_type">					        		
+						        							<option value="1" {{ ($director->type==1) ? "selected" : "" }}>Individual</option>
+					        								<option value="2" {{ ($director->type==2) ? "selected" : "" }}>Company</option>
+						        						</select>
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="director_{{ $key+1 }}_name">Name</label>
+							        					<input type="text" name="director_{{ $key+1 }}_name" value="{{ $director->name }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="director_{{ $key+1 }}_address">Address</label>
+							        					<input type="text" name="director_{{ $key+1 }}_address" value="{{ $director->address }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="director_{{ $key+1 }}_address_2">Address 2</label>
+							        					<input type="text" name="director_{{ $key+1 }}_address_2" value="{{ $director->address_2 }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="director_{{ $key+1 }}_address_3">Address 3</label>
+							        					<input type="text" name="director_{{ $key+1 }}_address_3" value="{{ $director->address_3 }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="director_{{ $key+1 }}_address_4">Address 4</label>
+							        					<input type="text" name="director_{{ $key+1 }}_address_4" value="{{ $director->address_4 }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="director_{{ $key+1 }}_telephone">Telephone</label>
+							        					<input type="text" name="director_{{ $key+1 }}_telephone" value="{{ $director->telephone }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="director_{{ $key+1 }}_passport">Passport</label>
+														<input type="hidden" name="director_{{ $key+1 }}_passport" value="{{ $director->passport }}" />
+						                                <span class="btn fileinput-button">                            
+						                                    <button class="upload-passport-btn custom-submit-class custom-submit-class-2" data-btn-text="Passport uploaded">Upload passport</button>
+						                                    <!-- The file input field used as target for the file upload widget -->
+						                                    <input class="passport_upload" type="file" name="files" data-fieldname="director_{{ $key+1 }}_passport" data-selector="director_{{ $key+1 }}" />
+						                                </span>
+						                                <!-- The container for the uploaded files -->
+						                                <div id="director_{{ $key+1 }}_passport_files" class="files"><p>{{ $director->passport }}</p></div>
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="director_{{ $key+1 }}_bill">Bill</label>
+														<input type="hidden" name="director_{{ $key+1 }}_bill" value="{{ $director->bill }}" />
+						                                <span class="btn fileinput-button">                            
+						                                    <button class="upload-bill-btn custom-submit-class custom-submit-class-2" data-btn-text="Utility bill uploaded">Upload utility bill</button>
+						                                    <!-- The file input field used as target for the file upload widget -->                            
+						                                    <input class="bill_upload" type="file" name="files" data-fieldname="director_{{ $key+1 }}_bill" data-selector="director_{{ $key+1 }}" />
+						                                </span>                
+						                                <!-- The container for the uploaded files -->
+						                                <div id="director_{{ $key+1 }}_bill_files" class="files"><p>{{ $director->bill }}</p></div>	
+							        				</div>
+						        				</fieldset>
+			        						</div>
+			        					</div>	        					
+		        					@endforeach	
+	        					@endif		
+	        					@if($company->wpusers[0]->pivot->nominee_director==1)
+	        						<div class="row each-director">
+		        						<div class="col-md-12">
+			        						<fieldset>
+			        							<legend>Nominee director</legend>
+			        							<input type="hidden" name="nominee_director_person_type">
+				        						<div class="each-input">
+				        							<label for="nominee_director_name">Name</label>
+						        					<input type="text" name="nominee_director_name" value="{{ (!empty($companywpuser_nominee_director)) ? $companywpuser_nominee_director->name : "" }}">
+				        						</div>
+				        						<div class="each-input">
+						        					<label for="nominee_director_address">Address</label>
+						        					<input type="text" name="nominee_director_address" value="{{ (!empty($companywpuser_nominee_director)) ? $companywpuser_nominee_director->address : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_director_address">Address 2</label>
+						        					<input type="text" name="nominee_director_address_2" value="{{ (!empty($companywpuser_nominee_director)) ? $companywpuser_nominee_director->address_2 : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_director_address">Address 3</label>
+						        					<input type="text" name="nominee_director_address_3" value="{{ (!empty($companywpuser_nominee_director)) ? $companywpuser_nominee_director->address_3 : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_director_address">Address 4</label>
+						        					<input type="text" name="nominee_director_address_4" value="{{ (!empty($companywpuser_nominee_director)) ? $companywpuser_nominee_director->address_4 : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_director_telephone">Telephone</label>
+						        					<input type="text" name="nominee_director_telephone" value="{{ (!empty($companywpuser_nominee_director)) ? $companywpuser_nominee_director->telephone : "" }}">
+						        				</div>
+				        					</fieldset>
+        								</div>
+		        					</div>
+	        					@endif					
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<p>Secretaries</p>
+							</div>
+							<div class="col-md-8">								
+	        					@if(count($company->companywpuser_secretaries) > 0)
+		        					@foreach($company->companywpuser_secretaries as $key => $secretary)
+										<div class="row each-director">
+			        						<div class="col-md-12">
+			        							<fieldset>
+				        							<legend>Secretary {{ $key+1 }}</legend>
+				        							<div class="each-input">
+						        						<label for="secretary_{{ $key+1 }}_type">Type</label>
+						        						<select name="secretary_{{ $key+1 }}_type" id="secretary_{{ $key+1 }}_type">
+						        							<option value="1" {{ ($secretary->type==1) ? "selected" : "" }}>Individual</option>
+					        								<option value="2" {{ ($secretary->type==2) ? "selected" : "" }}>Company</option>
+						        						</select>
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="secretary_{{ $key+1 }}_name">Name</label>
+							        					<input type="text" name="secretary_{{ $key+1 }}_name" value="{{ $secretary->name }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="secretary_{{ $key+1 }}_address">Address</label>
+							        					<input type="text" name="secretary_{{ $key+1 }}_address" value="{{ $secretary->address }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="secretary_{{ $key+1 }}_address_2">Address 2</label>
+							        					<input type="text" name="secretary_{{ $key+1 }}_address_2" value="{{ $secretary->address_2 }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="secretary_{{ $key+1 }}_address_3">Address 3</label>
+							        					<input type="text" name="secretary_{{ $key+1 }}_address_3" value="{{ $secretary->address_3 }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="secretary_{{ $key+1 }}_address_4">Address 4</label>
+							        					<input type="text" name="secretary_{{ $key+1 }}_address_4" value="{{ $secretary->address_4 }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="secretary_{{ $key+1 }}_telephone">Telephone</label>
+							        					<input type="text" name="secretary_{{ $key+1 }}_telephone" value="{{ $secretary->telephone }}">
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="secretary_{{ $key+1 }}_passport">Passport</label>
+														<input type="hidden" name="secretary_{{ $key+1 }}_passport" value="{{ $secretary->passport }}" />
+							                            <span class="btn fileinput-button">
+							                                <button class="upload-passport-btn custom-submit-class custom-submit-class-2" data-btn-text="Passport uploaded">Upload passport</button>
+							                                <!-- The file input field used as target for the file upload widget -->
+							                                <input class="passport_upload" type="file" name="files" data-fieldname="secretary_{{ $key+1 }}_passport" data-selector="secretary_{{ $key+1 }}" />
+							                            </span>
+							                            <!-- The container for the uploaded files -->
+							                            <div id="secretary_{{ $key+1 }}_passport_files" class="files"><p>{{ $secretary->passport }}</p></div>
+							        				</div>
+							        				<div class="each-input">
+							        					<label for="secretary_{{ $key+1 }}_bill">Bill</label>
+							        					<input type="hidden" name="secretary_{{ $key+1 }}_bill" value="{{ $secretary->bill }}" />
+						                                <span class="btn fileinput-button">                            
+						                                    <button class="upload-btn upload-bill-btn custom-submit-class custom-submit-class-2" data-btn-text="Utility bill uploaded">Upload utility bill</button>
+						                                    <!-- The file input field used as target for the file upload widget -->                            
+						                                    <input class="bill_upload" type="file" name="files" data-fieldname="secretary_{{ $key+1 }}_bill" data-selector="secretary_{{ $key+1 }}" />
+						                                </span>                
+						                                <!-- The container for the uploaded files -->
+						                                <div id="secretary_{{ $key+1 }}_bill_files" class="files"><p>{{ $secretary->bill }}</p></div>
+							        				</div>
+						        				</fieldset>
+			        						</div>
+			        					</div>
+		        					@endforeach
+		        				@endif
+		        				@if($company->wpusers[0]->pivot->nominee_secretary==1)
+	        						<div class="row each-director">
+		        						<div class="col-md-12">
+			        						<fieldset>
+			        							<legend>Nominee secretary</legend>
+			        							<input type="hidden" name="nominee_secretary_person_type">
+				        						<div class="each-input">
+				        							<label for="nominee_secretary_name">Name</label>
+						        					<input type="text" name="nominee_secretary_name" value="{{ (!empty($companywpuser_nominee_secretary)) ? $companywpuser_nominee_secretary->name : "" }}">
+				        						</div>
+				        						<div class="each-input">
+						        					<label for="nominee_secretary_address">Address</label>
+						        					<input type="text" name="nominee_secretary_address" value="{{ (!empty($companywpuser_nominee_secretary)) ? $companywpuser_nominee_secretary->address : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_secretary_address">Address 2</label>
+						        					<input type="text" name="nominee_secretary_address_2" value="{{ (!empty($companywpuser_nominee_secretary)) ? $companywpuser_nominee_secretary->address_2 : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_secretary_address">Address 3</label>
+						        					<input type="text" name="nominee_secretary_address_3" value="{{ (!empty($companywpuser_nominee_secretary)) ? $companywpuser_nominee_secretary->address_3 : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_secretary_address">Address 4</label>
+						        					<input type="text" name="nominee_secretary_address_4" value="{{ (!empty($companywpuser_nominee_secretary)) ? $companywpuser_nominee_secretary->address_4 : "" }}">
+						        				</div>
+						        				<div class="each-input">
+						        					<label for="nominee_secretary_telephone">Telephone</label>
+						        					<input type="text" name="nominee_secretary_telephone" value="{{ (!empty($companywpuser_nominee_secretary)) ? $companywpuser_nominee_secretary->telephone : "" }}">
+						        				</div>
+				        					</fieldset>
+        								</div>
+		        					</div>
+	        					@endif
+							</div>
+						</div>											
+						<div class="row">
+							<div class="col-md-4">
+								<p>Services</p>
+							</div>
+							<div class="col-md-8">
+								@if(count($servicescountries))
+									<table class="table table-striped">
+			                    		@foreach($servicescountries as $servicecountry)	                    	
+		                    				<tr>	                    					
+		                    					@if($servicecountry->service_name!=="Registered office annual fee (compulsory)")
+			                    					<td>{{ $servicecountry->service_name }}</td>
+			                    					<td>{{ $servicecountry->country_name }}</td>
+			                    					<td>{{ ($servicecountry->pivot->credit_card_count==0) ? "" : $servicecountry->pivot->credit_card_count }}</td>
+		                    					@endif
+		                    					
+		                    				</tr>
+			                    		@endforeach
+		                    		</table>
+	                    		@else
+	                    			<p>No Services</p>
+	                    		@endif
+							</div>
+						</div>			
+						<div class="row">
+							<div class="col-md-4">
+								<p>Infomation services</p>
+							</div>
+							<div class="col-md-8">
+								@if(count($informationservices) > 0)
+									<table class="table table-striped">
+			                    		@foreach($informationservices as $informationservice)	
+			                    			<tr>
+			                    				<td>{{ $informationservice->name }}</td>
+			                    			</tr>
+			                    		@endforeach
+		                    		</table>
+	                    		@else
+									<p>No information services</p>
+	                    		@endif
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p>Date of next accounts</p></div>	
+							<div class="col-md-8"><input type="text" name="date_of_next_accounts" id="date_of_next_accounts" value="{{ $companywpuser->date_of_next_accounts }}"></div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p>Accounts completion deadline</p></div>	
+							<div class="col-md-8"><input type="text" name="accounts_completion_deadline" id="accounts_completion_deadline" value="{{ $companywpuser->accounts_completion_deadline }}"></div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p>Date of last VAT return</p></div>	
+							<div class="col-md-8"><input type="text" name="date_of_last_vat_return" id="date_of_last_vat_return" value="{{ $companywpuser->date_of_last_vat_return }}"></div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p>Date of next VAT return</p></div>	
+							<div class="col-md-8"><input type="text" name="date_of_next_vat_return" id="date_of_next_vat_return" value="{{ $companywpuser->date_of_next_vat_return }}"></div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p>VAT return deadline</p></div>	
+							<div class="col-md-8"><input type="text" name="vat_return_deadline" id="vat_return_deadline" value="{{ $companywpuser->vat_return_deadline }}"></div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p>Next AGM due by</p></div>	
+							<div class="col-md-8"><input type="text" name="next_agm_due_by" id="next_agm_due_by" value="{{ $companywpuser->next_agm_due_by }}"></div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text-2">Incorporation certificate</p></div><!--
+							--><div class="col-md-4">
+								<input type="hidden" name="incorporation_certificate" value="{{ $companywpuser->incorporation_certificate }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Certificate uploaded">Upload certificate</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="incorporation_certificate" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="incorporation_certificate_files" class="pdf_files files"><p>{{ $companywpuser->incorporation_certificate }}</p></div>								
+							</div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text-2">Incumbency certificate</p></div><!--
+							--><div class="col-md-4">
+								<input type="hidden" name="incumbency_certificate" value="{{ $companywpuser->incumbency_certificate }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Certificate uploaded">Upload certificate</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="incumbency_certificate" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="incumbency_certificate_files" class="pdf_files files"><p>{{ $companywpuser->incumbency_certificate }}</p></div>								
+							</div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text-2" class="align-text">Company extract</p></div><!--
+							--><div class="col-md-4">
+								<input type="hidden" name="company_extract" value="{{ $companywpuser->company_extract }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Extract uploaded">Upload extract</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="company_extract" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="company_extract_files" class="pdf_files files"><p>{{ $companywpuser->company_extract }}</p></div>								
+							</div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text-2">Last financial statements</p></div><!--
+							--><div class="col-md-4">
+								<input type="hidden" name="last_financial_statements" value="{{ $companywpuser->last_financial_statements }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Statement uploaded">Upload statements</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="last_financial_statements" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="last_financial_statements_files" class="pdf_files files"><p>{{ $companywpuser->last_financial_statements }}</p></div>								
+							</div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text">Other documents 1</p></div><!--
+							--><div class="col-md-4">
+								<input type="text" name="other_documents_1_title" placeholder="Document title" value="{{ $companywpuser->other_documents_1_title }}">
+								<input type="hidden" name="other_documents_1" value="{{ $companywpuser->other_documents_1 }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Document uploaded">Upload document</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="other_documents_1" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="other_documents_1_files" class="pdf_files files"><p>{{ $companywpuser->other_documents_1 }}</p></div>								
+							</div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text">Other documents 2</p></div><!--
+							--><div class="col-md-4">
+								<input type="text" name="other_documents_2_title" placeholder="Document title" value="{{ $companywpuser->other_documents_2_title }}">
+								<input type="hidden" name="other_documents_2" value="{{ $companywpuser->other_documents_2 }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Document uploaded">Upload document</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="other_documents_2" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="other_documents_2_files" class="pdf_files files"><p>{{ $companywpuser->other_documents_2 }}</p></div>								
+							</div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text">Other documents 3</p></div><!--
+							--><div class="col-md-4">
+								<input type="text" name="other_documents_3_title" placeholder="Document title" value="{{ $companywpuser->other_documents_3_title }}">
+								<input type="hidden" name="other_documents_3" value="{{ $companywpuser->other_documents_3 }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Document uploaded">Upload document</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="other_documents_3" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="other_documents_3_files" class="pdf_files files"><p>{{ $companywpuser->other_documents_3 }}</p></div>								
+							</div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text">Other documents 4</p></div><!--
+							--><div class="col-md-4">
+								<input type="text" name="other_documents_4_title" placeholder="Document title" value="{{ $companywpuser->other_documents_4_title }}">
+								<input type="hidden" name="other_documents_4" value="{{ $companywpuser->other_documents_4 }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Document uploaded">Upload document</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="other_documents_4" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="other_documents_4_files" class="pdf_files files"><p>{{ $companywpuser->other_documents_4 }}</p></div>								
+							</div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text">Other documents 5</p></div><!--
+							--><div class="col-md-4">
+								<input type="text" name="other_documents_5_title" placeholder="Document title" value="{{ $companywpuser->other_documents_5_title }}">
+								<input type="hidden" name="other_documents_5" value="{{ $companywpuser->other_documents_5 }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Document uploaded">Upload document</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="other_documents_5" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="other_documents_5_files" class="pdf_files files"><p>{{ $companywpuser->other_documents_5 }}</p></div>								
+							</div>						
+						</div>
+						<div class="row">
+							<div class="col-md-4"><p class="align-text">Other documents 6</p></div><!--
+							--><div class="col-md-4">
+								<input type="text" name="other_documents_6_title" placeholder="Document title" value="{{ $companywpuser->other_documents_6_title }}">
+								<input type="hidden" name="other_documents_6" value="{{ $companywpuser->other_documents_6 }}" />
+	                            <span class="btn fileinput-button">
+	                                <button class="upload-pdf-btn custom-submit-class custom-submit-class-2" data-btn-text="Document uploaded">Upload document</button>
+	                                <!-- The file input field used as target for the file upload widget -->
+	                                <input class="pdf_upload" type="file" name="files" data-fieldname="other_documents_6" />
+	                            </span>
+	                            <!-- The container for the uploaded files -->
+	                            <div id="other_documents_6_files" class="pdf_files files"><p>{{ $companywpuser->other_documents_6 }}</p></div>								
+							</div>						
+						</div>
+					</div>
+					{{ Form::submit('Save', ['class'=>'custom-submit-class']) }}
+				{{ Form::close() }}
+			</div>
+		</div>
+	</div>
+	<div class="space100"></div>
+	<script>
+
+		///////////
+        /// FILE UPLOAD
+        ///////////
+
+        function initFileUpload($selector) {
+            $selector.each(function(i, obj) {
+                var $button = $(obj).prev("button");                    
+                var selector = $(obj).attr("data-fieldname");
+
+                var url = "{{ url('api/uploadfiles') }}";
+                $(obj).fileupload({
+                    url: url,
+                    dataType: "json",
+                    formData: { "user_name" : "{{ $company->wpusers[0]->user_login }}" },
+                    done: function (e, data) {
+
+                        var shortText = jQuery.trim(data.result.file.org_name).substring(0, 30).trim(this);
+
+                        $("input[name="+selector+"]").val(data.result.file.name);
+                        $("#"+selector+"_files").html("");
+                        $("<p/>").text(shortText).appendTo("#"+selector+"_files");
+                        $("#"+selector+"_files").parent().find("label.error").hide();
+
+                        $button.text($button.data("btn-text"));
+
+                    }
+                }).prop("disabled", !$.support.fileInput)
+                    .parent().addClass($.support.fileInput ? undefined : "disabled"); 
+
+            });                
+
+        }
+
+		initFileUpload($(".passport_upload"));
+        initFileUpload($(".bill_upload"));
+        initFileUpload($(".pdf_upload"));
+
+        $(".passport_upload").each(function(i, obj){
+            var selector = $(obj).data("selector");
+            var $this = $(this);                    
+
+            if($("#"+selector+"_type").val()==2) {
+                $this.prev("button").text("Upload incorporation certificate").data("btn-text", "Incorporation certificate uploaded");
+            }
+        });
+
+        $(".bill_upload").each(function(i, obj){
+            var selector = $(obj).data("selector");
+            var $this = $(this);                    
+
+            if($("#"+selector+"_type").val()==2) {
+                $this.prev("button").text("Upload memo & articles").data("btn-text", "Memo & articles uploaded");
+            }
+        });
+
+        $(".upload-passport-btn").on("click", function(e){
+            e.preventDefault();
+        });
+
+        $(".upload-bill-btn").on("click", function(e){
+            e.preventDefault();
+        });
+
+        $(".upload-pdf-btn").on("click", function(e){
+            e.preventDefault();
+        });
+
+        $('#date_of_next_accounts').datepicker({ dateFormat: 'dd/mm/y' });
+        $('#accounts_completion_deadline').datepicker({ dateFormat: 'dd/mm/y' });
+        $('#date_of_last_vat_return').datepicker({ dateFormat: 'dd/mm/y' });
+        $('#date_of_next_vat_return').datepicker({ dateFormat: 'dd/mm/y' });
+        $('#vat_return_deadline').datepicker({ dateFormat: 'dd/mm/y' });
+        $('#next_agm_due_by').datepicker({ dateFormat: 'dd/mm/y' });
+
+	</script>
+@endsection
